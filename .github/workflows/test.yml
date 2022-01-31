@@ -44,4 +44,4 @@ jobs:
           OPSGENIE_API_KEY: ${{ secrets.OPSGENIE_API_KEY }}
         run: |
           sleep 2
-          node assert_closed_alert_exists.js $ALERT_ALIAS
+          node .github/workflows/assert_closed_alert_exists.js $ALERT_ALIAS
