@@ -1,0 +1,44 @@
+name: Test OpsGenie Actions
+
+on:
+  workflow_dispatch:
+
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - name: Set alert alias
+        run: |
+          export ALIAS=test-alert-$(date +%s)
+          echo "ALERT_ALIAS=$(echo -n $ALIAS)" >> $GITHUB_ENV
+
+      - name: Create OpsGenie Alert
+        uses: rockem/create-opsgenie-alert-action@v1
+        with:
+          api_key: ${{ secrets.OPSGENIE_API_KEY }}
+          alias: ${{ env.ALERT_ALIAS }}
+          message: >
+            OpsGenie actions test
+          priority: P5
+          tags: e2e, test, actions
+
+      - name: Wait for a bit
+        run: sleep 2
+
+      - name: Close OpsGenie Alert
+        uses: rockem/close-opsgenie-alert-action@v1
+        with:
+          api_key: ${{ secrets.OPSGENIE_API_KEY }}
+          alias: ${{ env.ALERT_ALIAS }}
+          user: kuku@gmail.com
+          note: Closing test alert
+
+      - name: Verify alert exists and closed
+        run: |
+          sleep 2
+          node assert_closed_alert_exists.js $ALERT_ALIAS
