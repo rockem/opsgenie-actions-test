@@ -22,8 +22,8 @@ https.get(options, (resp) => {
             console.log(`ERROR: ${data}`)
             process.exit(2)
         }
-        if(JSON.parse(data).length === 0) {
-            console.log(`Failed to find closed alert with alias [${alias}]`)
+        if(JSON.parse(data)['data'].length === 0) {
+            console.log(`ERROR: Failed to find closed alert with alias [${alias}]`)
             process.exit(2)
         }
     });
