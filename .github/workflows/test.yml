@@ -4,11 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       create-alert-branch:
-        description: 'Branch fot create-opsgenie-alert-action'
+        description: 'Branch for Create OpsGenie Alert'
         required: false
         default: 'main'
       close-alert-branch:
-        description: 'Branch fot close-opsgenie-alert-action'
+        description: 'Branch for Close OpsGenie Alert'
         required: false
         default: 'main'
 
