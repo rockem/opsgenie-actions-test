@@ -27,7 +27,7 @@ jobs:
           echo "ALERT_ALIAS=$(echo -n $ALIAS)" >> $GITHUB_ENV
 
       - name: Create OpsGenie Alert
-        uses: ${{ format('rockem/create-opsgenie-alert-action@{0}', inputs.create-alert-branch) }}
+        uses: ${{ format('rockem/create-opsgenie-alert-action@{0}', github.event.inputs.create-alert-branch) }}
         with:
           api_key: ${{ secrets.OPSGENIE_API_KEY }}
           alias: ${{ env.ALERT_ALIAS }}
@@ -40,7 +40,7 @@ jobs:
         run: sleep 2
 
       - name: Close OpsGenie Alert
-        uses: ${{ format('rockem/close-opsgenie-alert-action@{0}', inputs.close-alert-branch) }}
+        uses: ${{ format('rockem/close-opsgenie-alert-action@{0}', github.event.inputs.close-alert-branch) }}
         with:
           api_key: ${{ secrets.OPSGENIE_API_KEY }}
           alias: ${{ env.ALERT_ALIAS }}
