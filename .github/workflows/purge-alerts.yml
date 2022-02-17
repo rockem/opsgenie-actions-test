@@ -14,3 +14,8 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '16'
+
+      - name: Verify alert is closed
+        env:
+          OPSGENIE_API_KEY: ${{ secrets.OPSGENIE_API_KEY }}
+        run: node ./src/purge-alerts.js

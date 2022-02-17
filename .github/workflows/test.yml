@@ -43,4 +43,4 @@ jobs:
       - name: Verify alert is closed
         env:
           OPSGENIE_API_KEY: ${{ secrets.OPSGENIE_API_KEY }}
-        run: node .github/workflows/assert_closed_alert_exists.js $ALERT_ALIAS
+        run: node ./src/assert_closed_alert_exists.js $ALERT_ALIAS
