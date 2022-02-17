@@ -2,15 +2,8 @@ name: Test OpsGenie Actions
 
 on:
   workflow_dispatch:
-    inputs:
-      create-alert-branch:
-        description: 'Branch for Create OpsGenie Alert'
-        required: false
-        default: 'main'
-      close-alert-branch:
-        description: 'Branch for Close OpsGenie Alert'
-        required: false
-        default: 'main'
+  schedule:
+    - cron: '0 */12 * * *'
 
 jobs:
   test:
@@ -27,30 +20,27 @@ jobs:
           echo "ALERT_ALIAS=$(echo -n $ALIAS)" >> $GITHUB_ENV
 
       - name: Create OpsGenie Alert
-        uses: ${{ format('rockem/create-opsgenie-alert-action@{0}', inputs.create-alert-branch) }}
+        uses: rockem/create-opsgenie-alert-action@v1
         with:
           api_key: ${{ secrets.OPSGENIE_API_KEY }}
           alias: ${{ env.ALERT_ALIAS }}
           message: >
             OpsGenie actions test
           priority: P5
-          tags: e2e, test, actions
 
       - name: Give alert time to be created
-        run: sleep 2
+        run: sleep 1
 
       - name: Close OpsGenie Alert
-        uses: ${{ format('rockem/close-opsgenie-alert-action@{0}', inputs.close-alert-branch) }}
+        uses: rockem/close-opsgenie-alert-action@v1
         with:
           api_key: ${{ secrets.OPSGENIE_API_KEY }}
           alias: ${{ env.ALERT_ALIAS }}
-          user: kuku@gmail.com
-          note: Closing test alert
 
       - name: Give alert time to close
-        run: sleep 2
+        run: sleep 1
 
-      - name: Verify alert exists and closed
+      - name: Verify alert is closed
         env:
           OPSGENIE_API_KEY: ${{ secrets.OPSGENIE_API_KEY }}
         run: node .github/workflows/assert_closed_alert_exists.js $ALERT_ALIAS
