@@ -1,4 +1,4 @@
-name: Test OpsGenie Actions
+name: Alerts Purger
 
 on:
   workflow_dispatch:
