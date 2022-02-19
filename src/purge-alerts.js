@@ -1,11 +1,14 @@
-const https = require('https');
+const axios = require('axios');
+const axiosThrottle = require('axios-request-throttle');
 
-const commonOptions = {
-  hostname: 'api.opsgenie.com',
+axiosThrottle.use(axios, { requestsPerSecond: 5 });
+
+const opsgenieClient = axios.create({
+  baseURL: 'https://api.opsgenie.com',
   headers: {
     Authorization: `GenieKey ${process.env.OPSGENIE_API_KEY}`,
   },
-};
+});
 
 const zeroPad = (num, places) => String(num).padStart(places, '0');
 
@@ -15,51 +18,20 @@ const oneDayOldTime = () => {
   return `${zeroPad(d.getUTCDate() + 1, 2)}-${zeroPad(d.getUTCMonth() + 1, 2)}-${zeroPad(d.getUTCFullYear(), 2)}`;
 };
 
-const doRequest = async (okStatus, options) => new Promise((resolve, reject) => {
-  https.get(options, (resp) => {
-    let data = '';
-
-    resp.on('data', (chunk) => {
-      data += chunk;
-    });
-
-    function validateSuccess() {
-      if (resp.statusCode !== okStatus) {
-        reject(data);
-      }
-    }
-
-    resp.on('end', () => {
-      validateSuccess();
-      resolve(JSON.parse(data).data);
-    });
-  }).on('error', (err) => {
-    reject(err.message);
-  });
-});
-
 const getAlerts = async () => {
-  const options = {
-    ...commonOptions,
-    path: `/v2/alerts?query=${(encodeURIComponent(`createdAt < ${oneDayOldTime()}`))}`,
-    method: 'GET',
-  };
-
-  return doRequest(200, options);
+  const response = await opsgenieClient.get(
+    `/v2/alerts?query=${(encodeURIComponent(`createdAt < ${oneDayOldTime()}`))}`,
+  );
+  return response.data.data;
 };
 
 const deleteAlertWithId = async (id) => {
-  const options = {
-    ...commonOptions,
-    path: `/v2/alerts/${id}`,
-    method: 'DELETE',
-  };
-  return doRequest(202, options);
+  await opsgenieClient.delete(`/v2/alerts/${id}`);
 };
 
 getAlerts(`createdAt < ${oneDayOldTime()}`)
   .then((alerts) => alerts.forEach((alert) => deleteAlertWithId(alert.id)))
   .catch((error) => {
-    console.log(`ERROR: ${error}`);
+    console.log(`ERROR: ${error.message}`);
     process.exit(1);
   });
