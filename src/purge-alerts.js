@@ -1,6 +1,6 @@
 const axios = require('axios');
 const axiosThrottle = require('axios-request-throttle');
-const {createClient} = require('./opsgenie-axios');
+const { createClient } = require('./opsgenie-axios');
 
 axiosThrottle.use(axios, { requestsPerSecond: 5 });
 
