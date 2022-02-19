@@ -1,14 +1,10 @@
 const axios = require('axios');
 const axiosThrottle = require('axios-request-throttle');
+const {createClient} = require('./opsgenie-axios');
 
 axiosThrottle.use(axios, { requestsPerSecond: 5 });
 
-const opsgenieClient = axios.create({
-  baseURL: 'https://api.opsgenie.com',
-  headers: {
-    Authorization: `GenieKey ${process.env.OPSGENIE_API_KEY}`,
-  },
-});
+const opsgenieClient = createClient();
 
 const zeroPad = (num, places) => String(num).padStart(places, '0');
 

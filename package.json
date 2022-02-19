@@ -5,7 +5,7 @@
   "author": "Eli Segal <eli.segal@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "lint": "eslint . --fix --ext .js"
+    "lint": "eslint . --ext .js"
   },
   "engines": {
     "node": ">=16"
