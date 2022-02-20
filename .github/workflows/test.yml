@@ -32,7 +32,7 @@ jobs:
           priority: P5
 
       - name: Give alert time to be created
-        run: sleep 1
+        run: sleep 2
 
       - name: Close OpsGenie Alert
         uses: rockem/close-opsgenie-alert-action@v1
@@ -41,7 +41,7 @@ jobs:
           alias: ${{ env.ALERT_ALIAS }}
 
       - name: Give alert time to close
-        run: sleep 1
+        run: sleep 2
 
       - name: Verify alert is closed
         env:
