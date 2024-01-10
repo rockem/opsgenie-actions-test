@@ -2,12 +2,11 @@ const axios = require('axios');
 const axiosThrottle = require('axios-request-throttle');
 const { createClient } = require('./opsgenie-axios');
 
-axiosThrottle.use(axios, { requestsPerSecond: 1 });
+axiosThrottle.use(axios, { requestsPerSecond: 2 });
 
 const opsgenieClient = createClient();
 
 const zeroPad = (num, places) => String(num).padStart(places, '0');
-
 const oneDayOldTime = () => {
   const d = new Date();
   d.setDate(d.getDate() - 1);
